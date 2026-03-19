@@ -1,0 +1,88 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(python3:*)",
+      "Bash(curl:*)",
+      "Bash(jq:*)",
+      "Bash(crontab:*)",
+      "Bash(cat:*)",
+      "Bash(echo:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(date:*)",
+      "Bash(git:*)",
+      "WebFetch(*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/user/stack/scripts/format-output.js"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[$(date +%Y-%m-%d\\ %H:%M)] Session ended' >> /home/user/stack/logs/session.log"
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/user/stack"],
+      "description": "Local filesystem access for project files"
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "description": "Web search for AI trend reports and lead research"
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      },
+      "description": "Slack integration for team report delivery"
+    },
+    "linkedin": {
+      "command": "node",
+      "args": ["/home/user/stack/mcp/linkedin-server.js"],
+      "env": {
+        "LINKEDIN_ACCESS_TOKEN": "${LINKEDIN_ACCESS_TOKEN}",
+        "LINKEDIN_CLIENT_ID": "${LINKEDIN_CLIENT_ID}",
+        "LINKEDIN_CLIENT_SECRET": "${LINKEDIN_CLIENT_SECRET}"
+      },
+      "description": "LinkedIn API integration for outreach and inbox management"
+    }
+  },
+  "env": {
+    "LINKEDIN_ACCESS_TOKEN": "",
+    "LINKEDIN_CLIENT_ID": "",
+    "LINKEDIN_CLIENT_SECRET": "",
+    "BRAVE_API_KEY": "",
+    "SLACK_BOT_TOKEN": "",
+    "SLACK_TEAM_ID": ""
+  }
+}
